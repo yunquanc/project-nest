@@ -1,17 +1,26 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { MainGuard } from './app.mainGuard';
+import { Transforminterceptor } from './pipe/transforminterceptor.pipe';
 import { CatsModule } from './modules/cats/index';
-import { GetMoudels } from './modules';
-let _GetMoudels = new GetMoudels();
+import modules from './modules';
+import { ValidationPipe } from './pipe/validation.pipe';
 
 @Module({
-  imports: _GetMoudels.getList(),
+  imports: modules,
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: MainGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: Transforminterceptor,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
     },
   ],
 })
